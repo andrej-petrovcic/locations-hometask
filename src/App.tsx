@@ -1,10 +1,21 @@
 import "./App.css";
-import Home from "./pages/Home";
 
 function App() {
+  const Fruits = [
+    { name: "Apple" },
+    { name: "Apricot" },
+    { name: "Honeyberry" },
+    { name: "Papaya" },
+    { name: "Jambul" },
+    { name: "Plum" },
+    { name: "Lemon" },
+    { name: "Pomelo" },
+  ];
   return (
-    <div className="App">
-      <Home />
+    <div>
+      {Fruits.map((data) => (
+        <p>{data.name}</p>
+      ))}
     </div>
   );
 }
