@@ -1,4 +1,4 @@
-name: CI/CD
+name: Deploy to Render.com
 
 on:
   push:
@@ -6,24 +6,17 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: npm install
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' # Deploy only when changes are pushed to the main branch
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.17.1"
 
       - name: Install dependencies
         run: npm install
@@ -31,10 +24,15 @@ jobs:
       - name: Build the application
         run: npm run build
 
-      # Add your deployment steps here, like deploying to a server or a cloud platform
-      # Example: Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+      - name: Deploy to Render.com
+        env:
+          RENDER_EMAIL: andrejnovi1133@gmail.com
+          RENDER_PASSWORD: Ibegyourpardon
+          RENDER_PROJECT_NAME: locations-hometask
+        run: |
+          curl -X POST https://api.render.com/v1/deploys \
+            -d "branch=main" \
+            -d "publicEnv=RENDER_EMAIL=$RENDER_EMAIL" \
+            -d "publicEnv=RENDER_PASSWORD=$RENDER_PASSWORD" \
+            -d "publicEnv=RENDER_PROJECT_NAME=$RENDER_PROJECT_NAME" \
+            -d "buildCommand=npm run build"
